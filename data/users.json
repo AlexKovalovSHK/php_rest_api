@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "\u0410\u043d\u043d\u0430",
+        "email": "anna@example.com"
+    },
+    {
+        "id": 2,
+        "name": "\u0411\u043e\u0440\u0438\u0441",
+        "email": "boris@example.com"
+    },
+    {
+        "id": 3,
+        "name": "\u0412\u0438\u043a\u0442\u043e\u0440",
+        "email": "viktor@example.com"
+    },
+    {
+        "id": 4,
+        "name": "\u0418\u0432\u0430\u043d",
+        "email": "ivan@example.com"
+    }
+]
