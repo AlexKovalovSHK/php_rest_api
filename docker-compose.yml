@@ -5,9 +5,8 @@ services:
     ports:
       - "8087:80"
     volumes:
-      - user-:/var/www/html/data
+      - user-:/var/www/html/data 
     restart: unless-stopped
 
-# Объявляем именованный том
 volumes:
-  user-data:  
+  user-: 
