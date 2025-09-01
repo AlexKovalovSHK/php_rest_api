@@ -1,8 +1,9 @@
 version: '3'
 services:
   php-api:
-    build: .
+    image: php-rest-api
     ports:
-      - "8007:80"
+      - "8087:80"
     volumes:
       - ./data/users.json:/var/www/html/data/users.json
+    restart: unless-stopped
