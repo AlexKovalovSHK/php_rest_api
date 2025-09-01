@@ -1,7 +1,8 @@
+# docker-compose.prod.yml
 version: '3'
 services:
   php-api:
-    build: .
+    image: php-rest-api
     ports:
       - "8087:80"
     volumes:
@@ -9,4 +10,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  user-data:  # Именованный том Docker
+  user-data
