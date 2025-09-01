@@ -6,7 +6,7 @@ services:
       - "8087:80"
     volumes:
       - user-:/var/www/html/data 
-      - ./ .env:/var/www/html/ .env
+      - ./.env:/var/www/html/.env
     restart: unless-stopped
 
 volumes:
