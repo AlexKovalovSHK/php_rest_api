@@ -19,7 +19,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Собираем PHP-образ
+      # Собираем PHP-образ (с entrypoint)
       - name: Build PHP image
         run: |
           docker build -t ${{ env.PHP_IMAGE }} .
@@ -29,31 +29,30 @@ jobs:
         run: |
           docker save ${{ env.PHP_IMAGE }} -o ${{ env.ARCHIVE_NAME }}
 
-      # Устанавливаем sshpass для передачи по паролю
+      # Устанавливаем sshpass
       - name: Install sshpass
         run: |
-          sudo apt-get update
-          sudo apt-get install -y sshpass
+          sudo apt-get update && sudo apt-get install -y sshpass
 
-      # Копируем архив и docker-compose.yml на сервер
+      # Копируем архив и production-версию docker-compose на сервер
       - name: Deploy to Server
         run: |
-          # Создаём папку на сервере
+          # Создаём основную папку
           sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_DIR }}"
 
-          # Копируем архив и docker-compose.yml
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ env.ARCHIVE_NAME }} docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_DIR }}
+          # Копируем архив и production-сборку docker-compose
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ env.ARCHIVE_NAME }} docker-compose.prod.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_DIR }}/docker-compose.yml
 
-          # На сервере: загружаем образ, перезапускаем сервис
+          # На сервере: загружаем образ и перезапускаем сервис
           sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} '
             cd ${{ env.DEPLOY_DIR }} && \
-            echo "Loading Docker image..." && \
+            echo "🎯 Loading Docker image..." && \
             docker load -i ${{ env.ARCHIVE_NAME }} && \
-            echo "Stopping old containers..." && \
+            echo "🛑 Stopping old containers..." && \
             docker-compose down && \
-            echo "Starting new containers..." && \
+            echo "🚀 Starting new containers..." && \
             docker-compose up -d && \
-            echo "Cleaning up..." && \
+            echo "🧹 Cleaning up..." && \
             rm -f ${{ env.ARCHIVE_NAME }} && \
             docker image prune -f
           '
