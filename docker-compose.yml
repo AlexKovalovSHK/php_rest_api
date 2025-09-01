@@ -5,9 +5,9 @@ services:
     ports:
       - "8087:80"
     volumes:
-      - user-/var/www/html/data  # ← это список (корректно)
+      - user-/var/www/html/data 
     restart: unless-stopped
 
 # Объявляем именованный том
 volumes:
-  user-data  # ← это объект (mapping), а не список!
+  user-data:  
