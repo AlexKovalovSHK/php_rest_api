@@ -40,14 +40,14 @@ jobs:
           # Создаём основную папку
           sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p ${{ env.DEPLOY_DIR }}"
 
-          # Копируем архив и docker-compose.prod.yml В ПАПКУ (не в файл!)
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ env.ARCHIVE_NAME }} docker-compose.prod.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_DIR }}/
+          # Копируем архив и docker-compose.yml
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ env.ARCHIVE_NAME }} docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ env.DEPLOY_DIR }}/
 
           # На сервере: переименовываем, загружаем образ и запускаем
           sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} '
             cd ${{ env.DEPLOY_DIR }} && \
-            echo "🎯 Renaming docker-compose.prod.yml to docker-compose.yml" && \
-            mv docker-compose.prod.yml docker-compose.yml && \
+            echo "🎯 Renaming docker-compose.yml to docker-compose.yml" && \
+            mv docker-compose.yml docker-compose.yml && \
             echo "📦 Loading Docker image..." && \
             docker load -i ${{ env.ARCHIVE_NAME }} && \
             echo "🛑 Stopping old containers..." && \
