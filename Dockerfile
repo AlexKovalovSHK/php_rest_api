@@ -1,10 +1,18 @@
 FROM php:8.2-apache
 
-# Устанавливаем модуль для MySQL и mod_rewrite
-RUN docker-php-ext-install pdo pdo_mysql \
+# Устанавливаем зависимости для Composer
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libzip-dev \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Устанавливаем расширения PHP
+RUN docker-php-ext-install pdo pdo_mysql zip \
     && a2enmod rewrite
 
-# Устанавливаем Composer
+# Устанавливаем Composer глобально
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Копируем composer.json и устанавливаем зависимости
@@ -12,17 +20,16 @@ COPY composer.json /var/www/html/
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
-# Копируем все файлы приложения
+# Копируем приложение
 COPY . /var/www/html
 
-# Копируем entrypoint и делаем исполняемым
+# Копируем entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Права на data/ и .env (если будут)
-RUN chown -R www-data:www-data /var/www/html/data \
-    && chmod -R 755 /var/www/html/data
+# Права на data/
+RUN chown -R www-data:www-data /var/www/html/data && \
+    chmod -R 755 /var/www/html/data
 
-# Устанавливаем entrypoint
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
