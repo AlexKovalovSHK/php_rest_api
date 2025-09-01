@@ -1,0 +1,13 @@
+version: '3'
+services:
+  php-api:
+    image: php-rest-api
+    ports:
+      - "8087:80"
+    volumes:
+      - user-/var/www/html/data
+    restart: unless-stopped
+
+volumes:
+  user-data
+  
