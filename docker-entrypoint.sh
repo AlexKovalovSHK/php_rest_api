@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Путь к файлу
+# Путь к файлу данных
 USERS_FILE="/var/www/html/data/users.json"
 
-# Создаём папку data, если её нет
+# Создаём папку, если её нет
 mkdir -p /var/www/html/data
 
-# Если файла users.json нет — создаём его с начальными данными
+# Если файла нет — создаём с начальными данными
 if [ ! -f "$USERS_FILE" ]; then
-    echo "Creating initial users.json..."
+    echo "🔧 Creating initial users.json..."
     cat > "$USERS_FILE" << 'EOF'
 [
     {
@@ -30,9 +30,9 @@ if [ ! -f "$USERS_FILE" ]; then
 EOF
 fi
 
-# Меняем владельца на www-data (чтобы Apache мог читать/писать)
-chown -R www-data:www-data /var/www/html/data
+# Права: Apache (www-data) должен иметь доступ
+chown -R www-www-data /var/www/html/data
 chmod -R 755 /var/www/html/data
 
-# Запускаем оригинальную команду (apache2-foreground)
+# Запускаем основную команду (apache2-foreground)
 exec "$@"
