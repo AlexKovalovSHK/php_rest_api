@@ -9,23 +9,24 @@ if [ ! -f "$USERS_FILE" ]; then
 [
     {
         "id": 1,
-        "name": "Анна",
+        "name": "Anna",
         "email": "anna@example.com"
     },
     {
         "id": 2,
-        "name": "Борис",
+        "name": "Boris",
         "email": "boris@example.com"
     },
     {
         "id": 3,
-        "name": "Виктор",
+        "name": "Viktor",
         "email": "viktor@example.com"
     }
 ]
 EOF
 fi
 
+# 🔥 Устанавливаем владельца и права
 chown -R www-www-data /var/www/html/data
 chmod -R 755 /var/www/html/data
 
