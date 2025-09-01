@@ -26,8 +26,8 @@ if [ ! -f "$USERS_FILE" ]; then
 EOF
 fi
 
-# 🔥 Устанавливаем владельца и права
-chown -R www-www-data /var/www/html/data
+# ✅ Правильно: www-data:www-data
+chown -R www-data:www-data /var/www/html/data
 chmod -R 755 /var/www/html/data
 
 exec "$@"
