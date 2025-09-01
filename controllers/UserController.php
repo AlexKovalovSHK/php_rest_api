@@ -59,35 +59,36 @@ class UserController {
 
     // Обновить пользователя по ID (PUT)
     public function update($id) {
-        $input = json_decode(file_get_contents('php://input'), true);
+    $input = json_decode(file_get_contents('php://input'), true);
 
-        if (empty($input['name']) || empty($input['email'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Name und E-Mail sind erforderlich']);
-            return;
-        }
-
-        $data = json_decode(file_get_contents($this->dataFile), true);
-        $found = false;
-
-        foreach ($data as &$item) {
-            if ($item['id'] == $id) {
-                $item['name'] = $input['name'];
-                $item['email'] = $input['email'];
-                $found = true;
-            }
-        }
-
-        if (!$found) {
-            http_response_code(404);
-            echo json_encode(['error' => 'Benutzer nicht gefunden']);
-            return;
-        }
-
-        // Сохраняем обновлённый список
-        file_put_contents($this->dataFile, json_encode($data, JSON_PRETTY_PRINT));
-
-        header('Content-Type: application/json');
-        echo json_encode(['message' => 'Benutzer aktualisiert', 'user' => $item]);
+    if (empty($input['name']) || empty($input['email'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Name und E-Mail sind erforderlich']);
+        return;
     }
+
+    $data = json_decode(file_get_contents($this->dataFile), true);
+    $found = false;
+    $updatedUser = null;
+
+    foreach ($data as &$item) {
+        if ($item['id'] == $id) {
+            $item['name'] = $input['name'];
+            $item['email'] = $input['email'];
+            $found = true;
+            $updatedUser = $item; // Сохраняем копию обновлённого пользователя
+        }
+    }
+
+    if (!$found) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Benutzer nicht gefunden']);
+        return;
+    }
+
+    file_put_contents($this->dataFile, json_encode($data, JSON_PRETTY_PRINT));
+
+    header('Content-Type: application/json');
+    echo json_encode(['message' => 'Benutzer aktualisiert', 'user' => $updatedUser]);
+}
 }
